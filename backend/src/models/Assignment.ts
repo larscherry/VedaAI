@@ -4,6 +4,7 @@ export interface IAssignment extends Document {
   userId: mongoose.Types.ObjectId;
   title: string;
   filePath: string | null;
+  fileContent: string | null;
   dueDate: Date;
   questionTypes: string[];
   numQuestions: number;
@@ -21,6 +22,7 @@ const AssignmentSchema = new Schema<IAssignment>(
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     title: { type: String, required: true, trim: true },
     filePath: { type: String, default: null },
+    fileContent: { type: String, default: null },
     dueDate: { type: Date, required: true },
     questionTypes: {
       type: [String],

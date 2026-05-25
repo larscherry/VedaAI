@@ -27,16 +27,8 @@ async function runGeneration(assignmentId: string) {
     });
 
     let fileContent: string | undefined;
-    if (assignment.filePath) {
-      const ext = path.extname(assignment.filePath).toLowerCase();
-      // Only extract content from text-based files
-      if ([".txt", ".md", ".csv"].includes(ext)) {
-        try {
-          fileContent = fs.readFileSync(assignment.filePath, "utf-8");
-        } catch {
-          console.warn("Could not read file:", assignment.filePath);
-        }
-      }
+    if (assignment.fileContent) {
+      fileContent = assignment.fileContent;
     }
 
     const { systemPrompt, userPrompt } = buildPrompt({
@@ -171,8 +163,17 @@ export async function createAssignment(req: AuthRequest, res: Response): Promise
     }
 
     let filePath: string | null = null;
+    let fileContent: string | null = null;
     if (req.file) {
       filePath = req.file.path;
+      const ext = path.extname(req.file.originalname).toLowerCase();
+      if ([".txt", ".md", ".csv"].includes(ext)) {
+        try {
+          fileContent = fs.readFileSync(filePath, "utf-8");
+        } catch (e) {
+          console.warn("Could not read uploaded file:", e);
+        }
+      }
     }
 
     const assignment = await Assignment.create({
@@ -186,6 +187,7 @@ export async function createAssignment(req: AuthRequest, res: Response): Promise
       subject: subject || "",
       className: className || "",
       filePath,
+      fileContent,
       status: "processing",
     });
 
