@@ -11,6 +11,8 @@ export interface IUser extends Document {
   className: string;
   apiKey: string;
   mockMode: boolean;
+  llmBaseUrl: string;
+  llmModel: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,6 +29,8 @@ const UserSchema = new Schema<IUser>(
     className: { type: String, default: "" },
     apiKey: { type: String, default: "" },
     mockMode: { type: Boolean, default: true },
+    llmBaseUrl: { type: String, default: "" },
+    llmModel: { type: String, default: "" },
   },
   { timestamps: true }
 );

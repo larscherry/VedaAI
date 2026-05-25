@@ -9,6 +9,8 @@ export interface User {
   className: string;
   apiKey: string;
   mockMode: boolean;
+  llmBaseUrl: string;
+  llmModel: string;
 }
 
 export interface Question {
@@ -38,6 +40,7 @@ export interface Assignment {
   _id: string;
   title: string;
   filePath: string | null;
+  fileContent: string | null;
   dueDate: string;
   questionTypes: string[];
   numQuestions: number;

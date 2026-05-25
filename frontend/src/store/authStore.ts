@@ -28,6 +28,8 @@ function getStoredUser(): User | null {
     // Migrate missing fields
     if (user.mockMode === undefined) user.mockMode = true;
     if (user.apiKey === undefined) user.apiKey = "";
+    if (user.llmBaseUrl === undefined) user.llmBaseUrl = "";
+    if (user.llmModel === undefined) user.llmModel = "";
     return user;
   } catch {
     return null;

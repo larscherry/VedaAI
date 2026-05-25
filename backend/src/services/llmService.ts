@@ -45,7 +45,9 @@ export async function generateQuestionPaper(
   userPrompt: string,
   apiKey?: string,
   fileContent?: string,
-  useMock?: boolean
+  useMock?: boolean,
+  llmBaseUrl?: string,
+  llmModel?: string
 ): Promise<GeneratedPaper> {
   const useMockLlm = useMock ?? env.USE_MOCK_LLM;
 
@@ -73,10 +75,12 @@ export async function generateQuestionPaper(
   const key = apiKey || env.OPENAI_API_KEY;
   if (!key) throw new Error("No OpenAI API key available. Enable mock mode in Settings, or provide an API key.");
 
-  const openai = new OpenAI({ apiKey: key });
+  const baseURL = llmBaseUrl || env.LLM_BASE_URL || undefined;
+  const model = llmModel || env.LLM_MODEL || "gpt-4o-mini";
+  const openai = new OpenAI({ apiKey: key, baseURL });
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
+    model,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },

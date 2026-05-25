@@ -77,6 +77,16 @@ export const api = {
     return res.json();
   },
 
+  async updateLlmConfig(llmBaseUrl: string, llmModel: string) {
+    const res = await fetch(`${API_BASE}/auth/llmconfig`, {
+      method: "PUT",
+      headers: headers(),
+      body: JSON.stringify({ llmBaseUrl, llmModel }),
+    });
+    if (!res.ok) throw new Error("Failed to update LLM config");
+    return res.json();
+  },
+
   async updateMockMode(mockMode: boolean) {
     const res = await fetch(`${API_BASE}/auth/mockmode`, {
       method: "PUT",

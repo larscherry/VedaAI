@@ -18,6 +18,8 @@ async function runGeneration(assignmentId: string) {
 
     const user = await User.findById(assignment.userId);
     const apiKey = user?.apiKey || undefined;
+    const llmBaseUrl = user?.llmBaseUrl || undefined;
+    const llmModel = user?.llmModel || undefined;
     const useMock = user?.mockMode ?? true;
 
     sendToAssignment(assignmentId, {
@@ -48,7 +50,7 @@ async function runGeneration(assignmentId: string) {
       percent: 40,
     });
 
-    const generated = await generateQuestionPaper(systemPrompt, userPrompt, apiKey, fileContent, useMock);
+    const generated = await generateQuestionPaper(systemPrompt, userPrompt, apiKey, fileContent, useMock, llmBaseUrl, llmModel);
 
     sendToAssignment(assignmentId, {
       type: "job:progress",

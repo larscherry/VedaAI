@@ -81,6 +81,16 @@ router.put("/mockmode", authMiddleware, async (req: AuthRequest, res: Response):
   }
 });
 
+router.put("/llmconfig", authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { llmBaseUrl, llmModel } = req.body;
+    await User.findByIdAndUpdate(req.userId, { $set: { llmBaseUrl: llmBaseUrl || "", llmModel: llmModel || "" } });
+    res.json({ message: "LLM config updated" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.put("/password", authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { currentPassword, newPassword } = req.body;

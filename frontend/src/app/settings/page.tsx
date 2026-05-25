@@ -40,6 +40,12 @@ export default function SettingsPage() {
   const [modeSaving, setModeSaving] = useState(false);
   const [modeSaved, setModeSaved] = useState(false);
 
+  // LLM Config state
+  const [llmBaseUrl, setLlmBaseUrl] = useState(user?.llmBaseUrl || "");
+  const [llmModel, setLlmModel] = useState(user?.llmModel || "");
+  const [llmSaving, setLlmSaving] = useState(false);
+  const [llmSaved, setLlmSaved] = useState(false);
+
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
@@ -171,8 +177,8 @@ export default function SettingsPage() {
           {tab === "apikey" && (
             <div className="max-w-lg space-y-4">
               <div>
-                <label className="text-sm font-medium text-[var(--foreground)]">OpenAI API Key</label>
-                <p className="text-xs text-[var(--muted-foreground)] mb-2">Your key is stored securely and used only for generating question papers.</p>
+                <label className="text-sm font-medium text-[var(--foreground)]">LLM API Key</label>
+                <p className="text-xs text-[var(--muted-foreground)] mb-2">Your key is stored securely and used for generating question papers. Works with OpenAI (sk-...), Groq (gsk_...), and other OpenAI-compatible APIs.</p>
                 <div className="relative">
                   <input
                     type={showKey ? "text" : "password"}
@@ -219,17 +225,17 @@ export default function SettingsPage() {
                 <label className="text-sm font-medium text-[var(--foreground)]">AI Generation Mode</label>
                 <p className="text-xs text-[var(--muted-foreground)] mb-4">
                   When mock mode is on, questions are generated locally for testing (no API key needed).
-                  Turn it off to use your OpenAI API key for real AI-generated questions.
+                  Turn it off to use your API key for real AI-generated questions.
                 </p>
                 <div className="flex items-center justify-between bg-[var(--muted)] rounded-xl p-4">
                   <div>
                     <p className="text-sm font-semibold text-[var(--foreground)]">
-                      {mockMode ? "Mock Mode (Testing)" : "Live Mode (OpenAI)"}
+                      {mockMode ? "Mock Mode (Testing)" : "Live Mode"}
                     </p>
                     <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
                       {mockMode
                         ? "Questions are generated locally without an API key"
-                        : "Questions are generated using OpenAI"}
+                        : "Questions are generated using the configured LLM"}
                     </p>
                   </div>
                   <button
@@ -251,6 +257,51 @@ export default function SettingsPage() {
                     <CheckCircle className="h-3 w-3" /> Mode updated
                   </p>
                 )}
+              </div>
+
+              <div className="border-t border-[var(--border)] pt-4">
+                <label className="text-sm font-medium text-[var(--foreground)]">LLM Provider Config</label>
+                <p className="text-xs text-[var(--muted-foreground)] mb-4">
+                  Leave blank for OpenAI defaults. For Groq: set Base URL to <code className="text-[var(--brand)]">https://api.groq.com/openai/v1</code> and Model to <code className="text-[var(--brand)]">llama3-70b-8192</code>.
+                </p>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-xs font-medium text-[var(--muted-foreground)]">Base URL</label>
+                    <input
+                      value={llmBaseUrl}
+                      onChange={(e) => setLlmBaseUrl(e.target.value)}
+                      placeholder="https://api.openai.com/v1 (or Groq/other)"
+                      className="mt-1 w-full h-11 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] px-4 text-sm outline-none focus:ring-2 focus:ring-[#E94E1B]/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-[var(--muted-foreground)]">Model</label>
+                    <input
+                      value={llmModel}
+                      onChange={(e) => setLlmModel(e.target.value)}
+                      placeholder="gpt-4o-mini (or llama3-70b-8192, etc.)"
+                      className="mt-1 w-full h-11 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] px-4 text-sm outline-none focus:ring-2 focus:ring-[#E94E1B]/30"
+                    />
+                  </div>
+                  <button
+                    onClick={async () => {
+                      setLlmSaving(true);
+                      try {
+                        await api.updateLlmConfig(llmBaseUrl, llmModel);
+                        updateUser({ llmBaseUrl, llmModel });
+                        setLlmSaved(true);
+                        setTimeout(() => setLlmSaved(false), 2000);
+                      } catch {}
+                      setLlmSaving(false);
+                    }}
+                    disabled={llmSaving}
+                    className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold px-6 py-2.5 hover:opacity-90 transition cursor-pointer disabled:opacity-50"
+                  >
+                    {llmSaving && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {llmSaved ? "Saved!" : "Save Config"}
+                    {llmSaved && <CheckCircle className="h-4 w-4 text-emerald-400" />}
+                  </button>
+                </div>
               </div>
             </div>
           )}
