@@ -30,7 +30,9 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
     const existing = get().ws;
     if (existing) existing.close();
 
-    const ws = new WebSocket(`ws://localhost:5000/ws?assignmentId=${assignmentId}`);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    const wsBase = apiUrl.replace(/^http/, "ws").replace(/\/api\/?$/, "");
+    const ws = new WebSocket(`${wsBase}/ws?assignmentId=${assignmentId}`);
 
     ws.onopen = () => set({ status: "connected", error: null });
     ws.onmessage = (event) => {
