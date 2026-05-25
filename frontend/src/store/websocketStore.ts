@@ -30,7 +30,7 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
     const existing = get().ws;
     if (existing) existing.close();
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://vedaai-backend-wxe5.onrender.com/api";
     const wsBase = apiUrl.replace(/^http/, "ws").replace(/\/api\/?$/, "");
     const ws = new WebSocket(`${wsBase}/ws?assignmentId=${assignmentId}`);
 

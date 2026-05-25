@@ -98,8 +98,21 @@ export default function AssignmentForm() {
     setFiles((f) => [...f, ...dropped]);
   };
 
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const validate = () => {
+    const errs: Record<string, string> = {};
+    if (!title.trim()) errs.title = "Title is required";
+    if (!dueDate) errs.dueDate = "Due date is required";
+    if (rows.length === 0) errs.rows = "Add at least one question type";
+    if (rows.some((r) => r.count < 1)) errs.rows = "Each question type must have at least 1 question";
+    if (totalQ === 0) errs.rows = "Total questions must be at least 1";
+    setFieldErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
   const handleSubmit = useCallback(async () => {
-    if (!title.trim() || !dueDate || rows.length === 0) return;
+    if (!validate()) return;
 
     setSubmitError("");
     setSubmitting(true);
@@ -158,10 +171,11 @@ export default function AssignmentForm() {
         <input
           type="text"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => { setTitle(e.target.value); setFieldErrors((p) => ({ ...p, title: "" })); }}
           placeholder="Assignment title"
-          className="w-full rounded-xl border border-gray-200 bg-[var(--card)] px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
+          className={`w-full rounded-xl border ${fieldErrors.title ? "border-red-400" : "border-gray-200"} bg-[var(--card)] px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors`}
         />
+        {fieldErrors.title && <p className="text-xs text-red-500 mt-1">{fieldErrors.title}</p>}
       </div>
 
       {/* Subject + Class row */}
@@ -238,14 +252,15 @@ export default function AssignmentForm() {
           <input
             type="date"
             value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-[var(--card)] px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
+            onChange={(e) => { setDueDate(e.target.value); setFieldErrors((p) => ({ ...p, dueDate: "" })); }}
+            className={`w-full rounded-xl border ${fieldErrors.dueDate ? "border-red-400" : "border-gray-200"} bg-[var(--card)] px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors`}
           />
           <Calendar
             size={16}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
           />
         </div>
+        {fieldErrors.dueDate && <p className="text-xs text-red-500 mt-1">{fieldErrors.dueDate}</p>}
       </div>
 
       {/* Question Type Table Header */}
@@ -298,6 +313,8 @@ export default function AssignmentForm() {
             </div>
           ))}
         </div>
+
+        {fieldErrors.rows && <p className="text-xs text-red-500 mt-1">{fieldErrors.rows}</p>}
 
         <button
           type="button"
