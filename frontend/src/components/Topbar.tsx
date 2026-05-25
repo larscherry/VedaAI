@@ -1,9 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Bell, Settings, Moon, Sun, LogOut, User, CheckCheck } from "lucide-react";
+import { Bell, Settings, LogOut, User, CheckCheck } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
-import { useThemeStore } from "@/store/themeStore";
 import { useNotificationStore } from "@/store/notificationStore";
 import { useEffect, useRef, useState } from "react";
 
@@ -22,7 +21,6 @@ export default function Topbar() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const token = useAuthStore((s) => s.token);
-  const { theme, toggleTheme } = useThemeStore();
   const {
     notifications,
     unreadCount,
@@ -164,20 +162,7 @@ export default function Topbar() {
                 Settings
               </a>
 
-              <button
-                onClick={() => { toggleTheme(); }}
-                className="w-full flex items-center justify-between gap-3 px-4 py-2.5 text-sm text-[var(--foreground)] hover:bg-[var(--hover)] transition-colors"
-              >
-                <span className="flex items-center gap-3">
-                  {theme === "dark" ? <Sun size={16} className="text-[var(--muted-foreground)]" /> : <Moon size={16} className="text-[var(--muted-foreground)]" />}
-                  {theme === "dark" ? "Light Mode" : "Dark Mode"}
-                </span>
-                <div className={`h-5 w-9 rounded-full transition-colors ${theme === "dark" ? "bg-[var(--brand)]" : "bg-[var(--muted)]"} relative`}>
-                  <div className={`h-4 w-4 rounded-full bg-white absolute top-0.5 transition-transform ${theme === "dark" ? "translate-x-4" : "translate-x-0.5"}`} />
-                </div>
-              </button>
-
-              <div className="border-t border-[var(--border)] mt-1">
+              <div className="border-t border-[var(--border)]">
                 <button
                   onClick={() => { logout(); setShowProfile(false); }}
                   className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-rose-500 hover:bg-[var(--hover)] transition-colors"

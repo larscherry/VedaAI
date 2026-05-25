@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
+import fs from "fs";
 import { createServer } from "http";
 import { connectDB } from "./config/db";
 import { env } from "./config/env";
@@ -17,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (_req, res) => {
-  res.redirect("http://localhost:3000");
+  res.json({ status: "VedaAI API running" });
 });
 
 app.use("/api/auth", authRoutes);
@@ -33,6 +35,13 @@ setupWebSocket(server);
 
 async function start() {
   await connectDB();
+
+  // Ensure uploads directory exists
+  const uploadsDir = path.resolve(__dirname, "../uploads");
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    console.log("Created uploads directory:", uploadsDir);
+  }
 
   server.listen(env.PORT, () => {
     console.log(`Server running on http://localhost:${env.PORT}`);
