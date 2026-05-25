@@ -11,13 +11,13 @@ import { createNotification } from "../services/notificationService";
 import path from "path";
 import fs from "fs";
 
-export async function startGeneration(assignmentId: string) {
+export async function startGeneration(assignmentId: string, requestApiKey?: string) {
   try {
     const assignment = await Assignment.findById(assignmentId);
     if (!assignment) throw new Error("Assignment not found");
 
     const user = await User.findById(assignment.userId);
-    const apiKey = user?.apiKey || undefined;
+    const apiKey = requestApiKey || user?.apiKey || undefined;
     const hasKey = !!(apiKey || process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY);
     const llmBaseUrl = user?.llmBaseUrl || undefined;
     const llmModel = user?.llmModel || undefined;
@@ -162,7 +162,8 @@ export async function createAssignment(req: AuthRequest, res: Response): Promise
     }
 
     const user = await User.findById(req.userId);
-    const hasKey = !!(user?.apiKey || process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY);
+    const reqApiKey = req.body.apiKey || "";
+    const hasKey = !!(reqApiKey || user?.apiKey || process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY);
     const isMockMode = !hasKey;
 
     const parsedTypes = typeof questionTypes === "string" ? JSON.parse(questionTypes) : questionTypes;
@@ -203,7 +204,7 @@ export async function createAssignment(req: AuthRequest, res: Response): Promise
 
     if (isMockMode) {
       // Mock LLM is instant — generate inline
-      await startGeneration(assignment._id.toString());
+      await startGeneration(assignment._id.toString(), reqApiKey);
       res.status(201).json({
         assignmentId: assignment._id.toString(),
         status: "completed",
@@ -214,7 +215,7 @@ export async function createAssignment(req: AuthRequest, res: Response): Promise
         assignmentId: assignment._id.toString(),
         status: "processing",
       });
-      startGeneration(assignment._id.toString()).catch((e) => console.error("Background gen failed:", e));
+      startGeneration(assignment._id.toString(), reqApiKey).catch((e) => console.error("Background gen failed:", e));
     }
   } catch (error: any) {
     console.error("Create assignment error:", error);

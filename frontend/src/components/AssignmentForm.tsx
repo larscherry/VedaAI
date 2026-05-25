@@ -132,6 +132,14 @@ export default function AssignmentForm() {
     formData.append("subject", subject);
     formData.append("className", className);
     if (files[0]) formData.append("file", files[0]);
+    // Send the user's API key from localStorage with the request
+    const savedUser = localStorage.getItem("vedaai_user");
+    if (savedUser) {
+      try {
+        const u = JSON.parse(savedUser);
+        if (u.apiKey) formData.append("apiKey", u.apiKey);
+      } catch {}
+    }
 
     try {
       const result = await api.createAssignment(formData);
