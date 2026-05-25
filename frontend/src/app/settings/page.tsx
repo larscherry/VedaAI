@@ -87,13 +87,13 @@ export default function SettingsPage() {
   const handleMockMode = async () => {
     setModeSaving(true);
     const newMode = !mockMode;
+    setMockMode(newMode);
+    updateUser({ mockMode: newMode });
     try {
       await api.updateMockMode(newMode);
-      setMockMode(newMode);
-      updateUser({ mockMode: newMode });
-      setModeSaved(true);
-      setTimeout(() => setModeSaved(false), 2000);
     } catch {}
+    setModeSaved(true);
+    setTimeout(() => setModeSaved(false), 2000);
     setModeSaving(false);
   };
 

@@ -18,9 +18,10 @@ export async function startGeneration(assignmentId: string) {
 
     const user = await User.findById(assignment.userId);
     const apiKey = user?.apiKey || undefined;
+    const hasKey = !!apiKey || !!process.env.OPENAI_API_KEY;
     const llmBaseUrl = user?.llmBaseUrl || undefined;
     const llmModel = user?.llmModel || undefined;
-    const useMock = user?.mockMode ?? true;
+    const useMock = !hasKey || (user?.mockMode ?? true);
 
     sendToAssignment(assignmentId, {
       type: "job:progress",
@@ -161,7 +162,8 @@ export async function createAssignment(req: AuthRequest, res: Response): Promise
     }
 
     const user = await User.findById(req.userId);
-    const isMockMode = user?.mockMode ?? true;
+    const hasKey = !!user?.apiKey || !!process.env.OPENAI_API_KEY;
+    const isMockMode = !hasKey || (user?.mockMode ?? true);
 
     const parsedTypes = typeof questionTypes === "string" ? JSON.parse(questionTypes) : questionTypes;
 
