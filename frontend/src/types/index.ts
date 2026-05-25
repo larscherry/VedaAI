@@ -49,6 +49,7 @@ export interface Assignment {
   subject: string;
   className: string;
   status: "pending" | "processing" | "completed" | "failed";
+  error?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -59,12 +59,12 @@ export default function SettingsPage() {
 
   const handleSaveApiKey = async () => {
     setApiSaving(true);
+    updateUser({ apiKey });
     try {
       await api.updateApiKey(apiKey);
-      updateUser({ apiKey });
-      setApiSaved(true);
-      setTimeout(() => setApiSaved(false), 2000);
     } catch {}
+    setApiSaved(true);
+    setTimeout(() => setApiSaved(false), 2000);
     setApiSaving(false);
   };
 
@@ -286,12 +286,12 @@ export default function SettingsPage() {
                   <button
                     onClick={async () => {
                       setLlmSaving(true);
+                      updateUser({ llmBaseUrl, llmModel });
                       try {
                         await api.updateLlmConfig(llmBaseUrl, llmModel);
-                        updateUser({ llmBaseUrl, llmModel });
-                        setLlmSaved(true);
-                        setTimeout(() => setLlmSaved(false), 2000);
                       } catch {}
+                      setLlmSaved(true);
+                      setTimeout(() => setLlmSaved(false), 2000);
                       setLlmSaving(false);
                     }}
                     disabled={llmSaving}

@@ -13,6 +13,7 @@ export interface IAssignment extends Document {
   subject: string;
   className: string;
   status: "pending" | "processing" | "completed" | "failed";
+  error: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,6 +40,7 @@ const AssignmentSchema = new Schema<IAssignment>(
       enum: ["pending", "processing", "completed", "failed"],
       default: "pending",
     },
+    error: { type: String, default: "" },
   },
   { timestamps: true }
 );

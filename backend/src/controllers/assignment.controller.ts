@@ -93,7 +93,7 @@ export async function startGeneration(assignmentId: string) {
     });
   } catch (error: any) {
     console.error("Generation failed:", error.message);
-    await Assignment.findByIdAndUpdate(assignmentId, { status: "failed" });
+    await Assignment.findByIdAndUpdate(assignmentId, { $set: { status: "failed", error: error.message || "Generation failed" } });
 
     sendToAssignment(assignmentId, {
       type: "job:failed",
@@ -111,6 +111,9 @@ export async function startGeneration(assignmentId: string) {
         relatedId: assignmentId,
       });
     }
+
+    // Re-throw so caller knows generation failed
+    throw error;
   }
 }
 
