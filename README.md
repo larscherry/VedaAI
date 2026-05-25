@@ -19,6 +19,18 @@ VedaAI is a web application that helps teachers generate custom question papers 
 
 ---
 
+## 📸 Screenshots
+
+| Dashboard & Stats | Create Assignment |
+|:---:|:---:|
+| ![VedaAI Screenshot 1](assets/vedaAI-1.jpg) | ![VedaAI Screenshot 2](assets/vedaAI-2.jpg) |
+
+| Question Paper Output | Settings & AI Mode |
+|:---:|:---:|
+| ![VedaAI Screenshot 3](assets/vedaAI-3.jpg) | ![VedaAI Screenshot 4](assets/vedaAI-4.png) |
+
+---
+
 ## ✨ Features
 
 | Feature | Description |
