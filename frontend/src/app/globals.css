@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f3ef;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --muted: #f3f3f4;
+  --muted-foreground: #8a8a90;
+  --border: #ececf0;
+  --brand: #E94E1B;
+  --accent: #a78bcc;
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #1a1a1a;
+  --topbar-bg: #ffffff;
+  --hover: #f5f5f5;
+  --input-bg: #ffffff;
+  --input-border: #e5e5e7;
+  --shadow: rgba(0, 0, 0, 0.08);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+.dark {
+  --background: #0f0f11;
+  --foreground: #e8e8ed;
+  --card: #1a1a1f;
+  --card-foreground: #e8e8ed;
+  --muted: #222228;
+  --muted-foreground: #8a8a90;
+  --border: #2a2a30;
+  --brand: #E94E1B;
+  --accent: #a78bcc;
+  --sidebar-bg: #1a1a1f;
+  --sidebar-text: #e8e8ed;
+  --topbar-bg: #1a1a1f;
+  --hover: #2a2a30;
+  --input-bg: #222228;
+  --input-border: #333338;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-accent: var(--accent);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-text: var(--sidebar-text);
+  --color-topbar-bg: var(--topbar-bg);
+  --color-hover: var(--hover);
+  --color-input-bg: var(--input-bg);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.font-serif {
+  font-family: ui-serif, Georgia, "Times New Roman", serif;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.5;
+}
+
+/* ── Dark mode overrides using attribute selectors ── */
+.dark,
+.dark * {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+/* Card backgrounds: bg-white, bg-white/70, etc. */
+.dark [class*="bg-white"] {
+  background-color: var(--card) !important;
+}
+
+/* Page background: bg-[#f4f3ef], bg-[#e8e8ea], bg-gray-100 */
+.dark [class*="f4f3ef"],
+.dark [class*="e8e8ea"],
+.dark [class*="bg-gray-100"] {
+  background-color: var(--background) !important;
+}
+
+/* Muted backgrounds: bg-[#f7f7f8], bg-[#f3f3f4], bg-[#f5f5f7] */
+.dark [class*="f7f7f8"],
+.dark [class*="f3f3f4"],
+.dark [class*="f5f5f7"] {
+  background-color: var(--hover) !important;
+}
+
+/* Text colors: text-[#1a1a1a] */
+.dark [class*="1a1a1a"][class*="text-"] {
+  color: var(--foreground) !important;
+}
+
+/* Text muted: text-[#6b6b70], text-[#8a8a90] */
+.dark [class*="6b6b70"][class*="text-"],
+.dark [class*="8a8a90"][class*="text-"] {
+  color: var(--muted-foreground) !important;
+}
+
+/* Borders: border-[#ececf0], border-[#e5e5e7] */
+.dark [class*="ececf0"][class*="border"],
+.dark [class*="e5e5e7"][class*="border"] {
+  border-color: var(--border) !important;
+}
+
+/* Gradient backgrounds */
+.dark [style*="background: linear-gradient"] {
+  background: linear-gradient(to bottom, var(--muted), var(--card)) !important;
+}

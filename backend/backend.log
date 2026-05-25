@@ -1,0 +1,5 @@
+[INFO] 10:41:46 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.9.3)
+Redis connected
+MongoDB connected successfully
+BullMQ workers registered
+[ERROR] 10:41:47 Error: listen EADDRINUSE: address already in use :::5000
