@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import MobileHeader from "@/components/MobileHeader";
+import BottomNav from "@/components/BottomNav";
 import { api } from "@/services/api";
 import { ArrowLeft, Plus, Trash2, Loader2, Users } from "lucide-react";
 
@@ -23,6 +25,7 @@ interface Group {
 export default function GroupDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
   const [group, setGroup] = useState<Group | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -53,12 +56,13 @@ export default function GroupDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
-      <Sidebar />
-      <main className="flex-1 bg-[var(--card)] rounded-2xl flex flex-col overflow-hidden relative">
+    <div className="min-h-screen bg-[var(--background)] lg:p-3 lg:flex lg:gap-3">
+      <Sidebar mobileOpen={menuOpen} onMobileClose={() => setMenuOpen(false)} />
+      <main className="flex-1 lg:bg-[var(--card)] lg:rounded-2xl lg:flex lg:flex-col lg:overflow-hidden relative">
         <Topbar />
+        <MobileHeader onMenuToggle={() => setMenuOpen((v) => !v)} menuOpen={menuOpen} />
 
-        <div className="flex-1 overflow-y-auto px-7 pt-6 pb-32" style={{ background: "linear-gradient(to bottom, var(--muted), var(--card))" }}>
+        <div className="flex-1 overflow-y-auto px-4 sm:px-7 pt-4 sm:pt-6 pb-32 lg:pb-32" style={{ background: "linear-gradient(to bottom, var(--muted), var(--card))" }}>
           {loading ? (
             <div className="mt-20 flex justify-center">
               <Loader2 className="h-6 w-6 animate-spin text-[var(--brand)]" />
@@ -71,22 +75,22 @@ export default function GroupDetailPage() {
                 <button onClick={() => router.push("/groups")} className="p-1 cursor-pointer">
                   <ArrowLeft className="h-5 w-5 text-[var(--muted-foreground)]" />
                 </button>
-                <div>
-                  <h1 className="text-2xl font-bold text-[var(--foreground)]">{group.name}</h1>
+                <div className="min-w-0">
+                  <h1 className="text-xl sm:text-2xl font-bold text-[var(--foreground)] truncate">{group.name}</h1>
                   {group.description && (
-                    <p className="text-sm text-[var(--muted-foreground)]">{group.description}</p>
+                    <p className="text-sm text-[var(--muted-foreground)] truncate">{group.description}</p>
                   )}
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center justify-between">
+              <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <p className="text-sm text-[var(--muted-foreground)]">
                   <Users className="h-4 w-4 inline mr-1" />
                   {group.students.length} student{group.students.length !== 1 ? "s" : ""}
                 </p>
                 <button
                   onClick={() => setShowAdd(true)}
-                  className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold px-4 py-2 hover:opacity-90 transition cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold px-4 py-2 hover:opacity-90 transition cursor-pointer w-full sm:w-auto justify-center"
                 >
                   <Plus className="h-4 w-4" />
                   Add Student
@@ -99,23 +103,23 @@ export default function GroupDetailPage() {
                   <p className="mt-2 text-sm text-[var(--muted-foreground)]">No students yet</p>
                 </div>
               ) : (
-                <div className="mt-4 overflow-hidden rounded-xl border border-[var(--border)]">
+                <div className="mt-4 overflow-x-auto rounded-xl border border-[var(--border)]">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-[var(--hover)] text-left text-[var(--muted-foreground)]">
-                        <th className="px-4 py-3 font-medium">Name</th>
-                        <th className="px-4 py-3 font-medium">Roll Number</th>
-                        <th className="px-4 py-3 font-medium">Email</th>
-                        <th className="px-4 py-3 w-16"></th>
+                        <th className="px-3 sm:px-4 py-3 font-medium">Name</th>
+                        <th className="px-3 sm:px-4 py-3 font-medium">Roll No</th>
+                        <th className="px-3 sm:px-4 py-3 font-medium hidden sm:table-cell">Email</th>
+                        <th className="px-3 sm:px-4 py-3 w-12 sm:w-16"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {group.students.map((s) => (
                         <tr key={s.rollNumber} className="border-t border-[var(--border)]">
-                          <td className="px-4 py-3 text-[var(--foreground)] font-medium">{s.name}</td>
-                          <td className="px-4 py-3 text-[var(--muted-foreground)]">{s.rollNumber}</td>
-                          <td className="px-4 py-3 text-[var(--muted-foreground)]">{s.email || "—"}</td>
-                          <td className="px-4 py-3">
+                          <td className="px-3 sm:px-4 py-3 text-[var(--foreground)] font-medium text-xs sm:text-sm">{s.name}</td>
+                          <td className="px-3 sm:px-4 py-3 text-[var(--muted-foreground)] text-xs sm:text-sm">{s.rollNumber}</td>
+                          <td className="px-3 sm:px-4 py-3 text-[var(--muted-foreground)] text-xs sm:text-sm hidden sm:table-cell">{s.email || "—"}</td>
+                          <td className="px-3 sm:px-4 py-3">
                             <button
                               onClick={() => handleRemove(s.rollNumber)}
                               className="p-1 text-[var(--muted-foreground)] hover:text-red-500 cursor-pointer"
@@ -149,6 +153,7 @@ export default function GroupDetailPage() {
           </div>
         )}
       </main>
+      <BottomNav />
     </div>
   );
 }

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import MobileHeader from "@/components/MobileHeader";
+import BottomNav from "@/components/BottomNav";
 import { Filter, Search, MoreVertical, Plus, FileText, Loader2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { api } from "@/services/api";
@@ -15,6 +17,7 @@ export default function AssignmentsPage() {
   const [loading, setLoading] = useState(true);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const fetchAssignments = () => {
     api
@@ -43,17 +46,18 @@ export default function AssignmentsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
-      <Sidebar />
-      <main className="flex-1 bg-[var(--card)] rounded-2xl flex flex-col overflow-hidden relative">
+    <div className="min-h-screen bg-[var(--background)] lg:p-3 lg:flex lg:gap-3">
+      <Sidebar mobileOpen={menuOpen} onMobileClose={() => setMenuOpen(false)} />
+      <main className="flex-1 lg:bg-[var(--card)] lg:rounded-2xl lg:flex lg:flex-col lg:overflow-hidden relative">
         <Topbar />
+        <MobileHeader onMenuToggle={() => setMenuOpen((v) => !v)} menuOpen={menuOpen} />
 
-        <div className="flex-1 overflow-y-auto px-7 pt-6 pb-32" style={{ background: "linear-gradient(to bottom, var(--muted), var(--card))" }}>
+        <div className="flex-1 overflow-y-auto px-4 sm:px-7 pt-4 sm:pt-6 pb-32 lg:pb-32" style={{ background: "linear-gradient(to bottom, var(--muted), var(--card))" }}>
           {/* Title row */}
           <div className="flex items-start gap-3">
-            <span className="mt-2 h-3 w-3 rounded-full bg-emerald-500" />
+            <span className="mt-2 h-3 w-3 rounded-full bg-emerald-500 shrink-0" />
             <div>
-              <h1 className="text-2xl font-bold text-[var(--foreground)]">Assignments</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-[var(--foreground)]">Assignments</h1>
               <p className="text-sm text-[var(--muted-foreground)] mt-1">
                 Manage and create assignments for your classes.
               </p>
@@ -61,12 +65,12 @@ export default function AssignmentsPage() {
           </div>
 
           {/* Filter / Search */}
-          <div className="mt-6 flex items-center justify-between gap-4">
-            <button className="flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer">
+          <div className="mt-6 flex items-center gap-4">
+            <button className="flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer shrink-0">
               <Filter className="h-4 w-4" />
-              Filter By
+              <span className="hidden sm:inline">Filter</span>
             </button>
-            <div className="relative w-[340px]">
+            <div className="relative flex-1 sm:max-w-[340px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#a0a0a8]" />
               <input
                 placeholder="Search Assignment"
@@ -100,15 +104,15 @@ export default function AssignmentsPage() {
               )}
             </div>
           ) : (
-            <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-5">
               {filtered.map((a) => (
                 <div
                   key={a._id}
-                  className="relative bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-[0_1px_2px_rgba(0,0,0,0.04)] p-6 hover:shadow-md transition cursor-pointer"
+                  className="relative bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-[0_1px_2px_rgba(0,0,0,0.04)] p-4 sm:p-6 hover:shadow-md transition cursor-pointer"
                   onClick={() => router.push(`/output/${a._id}`)}
                 >
                   <div className="flex items-start justify-between">
-                    <h3 className="text-lg font-extrabold text-[var(--foreground)] underline underline-offset-4 decoration-1">
+                    <h3 className="text-sm sm:text-lg font-bold text-[var(--foreground)]">
                       {a.title}
                     </h3>
                     <button
@@ -116,22 +120,22 @@ export default function AssignmentsPage() {
                         e.stopPropagation();
                         setOpenMenu(openMenu === a._id ? null : a._id);
                       }}
-                      className="p-1 text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer"
+                      className="p-1 text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer shrink-0"
                     >
-                      <MoreVertical className="h-5 w-5" />
+                      <MoreVertical className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                   </div>
 
-                  <div className="mt-12 flex items-center justify-between text-sm">
-<span className="font-semibold text-[var(--foreground)]">
+                  <div className="mt-3 sm:mt-12 flex items-center gap-3 sm:gap-0 sm:justify-between text-xs sm:text-sm">
+                    <span className="font-semibold text-[var(--foreground)]">
                       Assigned on:
-                      <span className="font-normal text-[var(--muted-foreground)]">
+                      <span className="font-normal text-[var(--muted-foreground)] ml-1">
                         {new Date(a.createdAt).toLocaleDateString("en-GB")}
                       </span>
                     </span>
-<span className="font-semibold text-[var(--foreground)]">
+                    <span className="font-semibold text-[var(--foreground)]">
                       Due:
-                      <span className="font-normal text-[var(--muted-foreground)]">
+                      <span className="font-normal text-[var(--muted-foreground)] ml-1">
                         {new Date(a.dueDate).toLocaleDateString("en-GB")}
                       </span>
                     </span>
@@ -157,7 +161,7 @@ export default function AssignmentsPage() {
                   </div>
 
                   {openMenu === a._id && (
-                    <div className="absolute top-12 right-6 w-44 bg-[var(--card)] rounded-xl shadow-xl border border-[var(--border)] py-2 z-10">
+                    <div className="absolute top-12 right-4 sm:right-6 w-44 bg-[var(--card)] rounded-xl shadow-xl border border-[var(--border)] py-2 z-10">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -182,9 +186,9 @@ export default function AssignmentsPage() {
           )}
         </div>
 
-        {/* Floating Create button */}
+        {/* Floating Create button (desktop only) */}
         <Link href="/create">
-          <div className="absolute bottom-6 left-0 right-0 flex justify-center pointer-events-none">
+          <div className="absolute bottom-6 left-0 right-0 justify-center pointer-events-none hidden lg:flex">
             <button className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold px-6 py-3.5 shadow-2xl hover:opacity-90 transition cursor-pointer">
               <Plus className="h-4 w-4" />
               Create Assignment
@@ -192,6 +196,7 @@ export default function AssignmentsPage() {
           </div>
         </Link>
       </main>
+      <BottomNav />
     </div>
   );
 }

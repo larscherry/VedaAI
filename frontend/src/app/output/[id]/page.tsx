@@ -3,6 +3,8 @@
 import { useEffect, useState, use, useRef, useCallback } from "react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import MobileHeader from "@/components/MobileHeader";
+import BottomNav from "@/components/BottomNav";
 import QuestionPaper from "@/components/QuestionPaper";
 import ActionBar from "@/components/ActionBar";
 import AnswerKey from "@/components/AnswerKey";
@@ -18,6 +20,7 @@ export default function OutputPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [paper, setPaper] = useState<QuestionPaperType | null>(null);
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [loading, setLoading] = useState(true);
@@ -123,23 +126,26 @@ export default function OutputPage({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
-        <Sidebar />
+      <div className="min-h-screen bg-[var(--background)] lg:p-3 lg:flex lg:gap-3">
+        <Sidebar mobileOpen={menuOpen} onMobileClose={() => setMenuOpen(false)} />
         <main className="flex-1 flex items-center justify-center">
+          <MobileHeader onMenuToggle={() => setMenuOpen((v) => !v)} menuOpen={menuOpen} />
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin text-orange-500 mx-auto" />
             <p className="mt-3 text-sm text-[var(--muted-foreground)]">Loading question paper...</p>
           </div>
         </main>
+        <BottomNav />
       </div>
     );
   }
 
   if (processing || (progress && !isComplete)) {
     return (
-      <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
-        <Sidebar />
-        <main className="flex-1 flex flex-col items-center justify-center bg-[var(--card)] rounded-2xl">
+      <div className="min-h-screen bg-[var(--background)] lg:p-3 lg:flex lg:gap-3">
+        <Sidebar mobileOpen={menuOpen} onMobileClose={() => setMenuOpen(false)} />
+        <main className="flex-1 flex flex-col items-center justify-center lg:bg-[var(--card)] lg:rounded-2xl">
+          <MobileHeader onMenuToggle={() => setMenuOpen((v) => !v)} menuOpen={menuOpen} />
           <div className="max-w-md w-full px-6">
             <StatusTracker progress={progress} error={null} isComplete={isComplete} />
             {wsOffline && (
@@ -150,17 +156,19 @@ export default function OutputPage({
             )}
           </div>
         </main>
+        <BottomNav />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
-        <Sidebar />
-        <main className="flex-1 bg-[var(--card)] rounded-2xl flex flex-col overflow-hidden">
+      <div className="min-h-screen bg-[var(--background)] lg:p-3 lg:flex lg:gap-3">
+        <Sidebar mobileOpen={menuOpen} onMobileClose={() => setMenuOpen(false)} />
+        <main className="flex-1 lg:bg-[var(--card)] lg:rounded-2xl lg:flex lg:flex-col lg:overflow-hidden">
           <Topbar />
-          <section className="flex-1 flex items-center justify-center">
+          <MobileHeader onMenuToggle={() => setMenuOpen((v) => !v)} menuOpen={menuOpen} />
+          <section className="flex-1 flex items-center justify-center p-4">
             <div className="text-center max-w-md">
               <div className="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center mx-auto">
                 <span className="text-2xl text-red-500">!</span>
@@ -175,17 +183,19 @@ export default function OutputPage({
             </div>
           </section>
         </main>
+        <BottomNav />
       </div>
     );
   }
 
   if (!paper) {
     return (
-      <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
-        <Sidebar />
-        <main className="flex-1 bg-[var(--card)] rounded-2xl flex flex-col overflow-hidden">
+      <div className="min-h-screen bg-[var(--background)] lg:p-3 lg:flex lg:gap-3">
+        <Sidebar mobileOpen={menuOpen} onMobileClose={() => setMenuOpen(false)} />
+        <main className="flex-1 lg:bg-[var(--card)] lg:rounded-2xl lg:flex lg:flex-col lg:overflow-hidden">
           <Topbar />
-          <section className="flex-1 flex items-center justify-center">
+          <MobileHeader onMenuToggle={() => setMenuOpen((v) => !v)} menuOpen={menuOpen} />
+          <section className="flex-1 flex items-center justify-center p-4">
             <div className="text-center">
               <div className="h-16 w-16 rounded-full bg-[var(--muted)] flex items-center justify-center mx-auto">
                 <FileText className="h-7 w-7 text-[var(--muted-foreground)]" />
@@ -200,36 +210,39 @@ export default function OutputPage({
             </div>
           </section>
         </main>
+        <BottomNav />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
-      <Sidebar />
-      <main className="flex-1 min-w-0">
+    <div className="min-h-screen bg-[var(--background)] lg:p-3 lg:flex lg:gap-3">
+      <Sidebar mobileOpen={menuOpen} onMobileClose={() => setMenuOpen(false)} />
+      <main className="flex-1 min-w-0 lg:mb-0">
         <Topbar />
+        <MobileHeader onMenuToggle={() => setMenuOpen((v) => !v)} menuOpen={menuOpen} />
 
-        <div className="mt-4">
+        <div className="px-4 sm:px-7 pt-4 pb-32 lg:pb-16">
           <ActionBar assignmentId={id} />
+
+          <section className="mt-4 rounded-2xl bg-[var(--card)] p-4 sm:p-5 lg:p-8 shadow-sm">
+            {paper && <QuestionPaper paper={paper} />}
+
+            {paper && paper.answerKey && paper.answerKey.length > 0 && <AnswerKey answers={paper.answerKey} />}
+
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={handleRegenerate}
+                disabled={isRegenerating}
+                className="px-6 py-2.5 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-medium hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                {isRegenerating ? "Regenerating..." : "Regenerate Questions"}
+              </button>
+            </div>
+          </section>
         </div>
-
-        <section className="mt-4 rounded-2xl bg-[var(--card)] p-5 sm:p-8 shadow-sm">
-          {paper && <QuestionPaper paper={paper} />}
-
-          {paper && paper.answerKey && paper.answerKey.length > 0 && <AnswerKey answers={paper.answerKey} />}
-
-          <div className="mt-6 flex justify-center">
-            <button
-              onClick={handleRegenerate}
-              disabled={isRegenerating}
-              className="px-6 py-2.5 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-medium hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              {isRegenerating ? "Regenerating..." : "Regenerate Questions"}
-            </button>
-          </div>
-        </section>
       </main>
+      <BottomNav />
     </div>
   );
 }

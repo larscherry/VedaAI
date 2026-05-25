@@ -3,12 +3,15 @@
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import MobileHeader from "@/components/MobileHeader";
+import BottomNav from "@/components/BottomNav";
 import { api } from "@/services/api";
 import { PieChart, FileText, Loader2, Search } from "lucide-react";
 import Link from "next/link";
 import type { Assignment } from "@/types";
 
 export default function LibraryPage() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -24,20 +27,21 @@ export default function LibraryPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
-      <Sidebar />
-      <main className="flex-1 bg-[var(--card)] rounded-2xl flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-[var(--background)] lg:p-3 lg:flex lg:gap-3">
+      <Sidebar mobileOpen={menuOpen} onMobileClose={() => setMenuOpen(false)} />
+      <main className="flex-1 lg:bg-[var(--card)] lg:rounded-2xl lg:flex lg:flex-col lg:overflow-hidden">
         <Topbar />
-        <div className="flex-1 overflow-y-auto px-7 pt-6 pb-16" style={{ background: "linear-gradient(to bottom, var(--muted), var(--card))" }}>
+        <MobileHeader onMenuToggle={() => setMenuOpen((v) => !v)} menuOpen={menuOpen} />
+        <div className="flex-1 overflow-y-auto px-4 sm:px-7 pt-4 sm:pt-6 pb-32 lg:pb-16" style={{ background: "linear-gradient(to bottom, var(--muted), var(--card))" }}>
           <div className="flex items-start gap-3">
-            <span className="mt-2 h-3 w-3 rounded-full bg-emerald-500" />
+            <span className="mt-2 h-3 w-3 rounded-full bg-emerald-500 shrink-0" />
             <div>
-              <h1 className="text-2xl font-bold text-[var(--foreground)]">My Library</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-[var(--foreground)]">My Library</h1>
               <p className="text-sm text-[var(--muted-foreground)] mt-1">Browse your completed question papers.</p>
             </div>
           </div>
 
-          <div className="mt-6 relative w-[340px]">
+          <div className="mt-6 relative w-full sm:w-[340px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#a0a0a8]" />
             <input
               placeholder="Search papers..."
@@ -68,20 +72,20 @@ export default function LibraryPage() {
               )}
             </div>
           ) : (
-            <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-5">
               {filtered.map((a) => (
                 <Link key={a._id} href={`/output/${a._id}`}>
-                  <div className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-[0_1px_2px_rgba(0,0,0,0.04)] p-6 hover:shadow-md transition cursor-pointer">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <div className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-[0_1px_2px_rgba(0,0,0,0.04)] p-4 sm:p-6 hover:shadow-md transition cursor-pointer">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="h-10 w-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
                         <FileText className="h-4 w-4 text-emerald-600" />
                       </div>
-                      <div>
-                        <h3 className="text-lg font-extrabold text-[var(--foreground)]">{a.title}</h3>
+                      <div className="min-w-0">
+                        <h3 className="text-sm sm:text-lg font-bold text-[var(--foreground)] truncate">{a.title}</h3>
                         <p className="text-xs text-[var(--muted-foreground)]">{a.numQuestions} questions · {a.totalMarks} marks</p>
                       </div>
                     </div>
-                    <div className="mt-3 flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
+                    <div className="mt-2 sm:mt-3 flex items-center gap-2 text-xs text-[var(--muted-foreground)] flex-wrap">
                       <span>{a.subject || "General"}</span>
                       {a.className && <span>· Class {a.className}</span>}
                       <span>· {new Date(a.createdAt).toLocaleDateString("en-GB")}</span>
@@ -93,6 +97,7 @@ export default function LibraryPage() {
           )}
         </div>
       </main>
+      <BottomNav />
     </div>
   );
 }

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import MobileHeader from "@/components/MobileHeader";
+import BottomNav from "@/components/BottomNav";
 import { useAuthStore } from "@/store/authStore";
 import { api } from "@/services/api";
 import { User, Key, Lock, Cpu, Loader2, Eye, EyeOff, CheckCircle } from "lucide-react";
@@ -104,22 +106,25 @@ export default function SettingsPage() {
     { id: "aimode", label: "AI Mode", icon: Cpu },
   ];
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
-      <Sidebar />
-      <main className="flex-1 bg-[var(--card)] rounded-2xl flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-[var(--background)] lg:p-3 lg:flex lg:gap-3">
+      <Sidebar mobileOpen={menuOpen} onMobileClose={() => setMenuOpen(false)} />
+      <main className="flex-1 lg:bg-[var(--card)] lg:rounded-2xl lg:flex lg:flex-col lg:overflow-hidden">
         <Topbar />
-        <div className="flex-1 overflow-y-auto px-7 pt-6 pb-16" style={{ background: "linear-gradient(to bottom, var(--muted), var(--card))" }}>
-          <div className="flex items-start gap-3 mb-6">
-            <span className="mt-2 h-3 w-3 rounded-full bg-emerald-500" />
+        <MobileHeader onMenuToggle={() => setMenuOpen((v) => !v)} menuOpen={menuOpen} />
+        <div className="flex-1 overflow-y-auto px-4 sm:px-7 pt-4 sm:pt-6 pb-32 lg:pb-16" style={{ background: "linear-gradient(to bottom, var(--muted), var(--card))" }}>
+          <div className="flex items-start gap-3 mb-4 sm:mb-6">
+            <span className="mt-2 h-3 w-3 rounded-full bg-emerald-500 shrink-0" />
             <div>
-              <h1 className="text-2xl font-bold text-[var(--foreground)]">Settings</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-[var(--foreground)]">Settings</h1>
               <p className="text-sm text-[var(--muted-foreground)] mt-1">Manage your account settings.</p>
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-6">
+          <div className="flex gap-1 sm:gap-2 mb-6 overflow-x-auto pb-1">
             {tabs.map((t) => {
               const Icon = t.icon;
               const active = tab === t.id;
@@ -142,7 +147,7 @@ export default function SettingsPage() {
 
           {tab === "profile" && (
             <div className="max-w-lg space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-[var(--foreground)]">Name</label>
                   <input value={name} onChange={(e) => setName(e.target.value)} className="mt-1 w-full h-11 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] px-4 text-sm outline-none focus:ring-2 focus:ring-[#E94E1B]/30" />
@@ -307,6 +312,7 @@ export default function SettingsPage() {
           )}
         </div>
       </main>
+      <BottomNav />
     </div>
   );
 }
