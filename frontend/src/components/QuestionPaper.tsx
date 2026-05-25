@@ -3,12 +3,16 @@
 import type { QuestionPaper as QuestionPaperType } from "@/types";
 import QuestionSection from "./QuestionSection";
 import StudentInfo from "./StudentInfo";
+import { useAuthStore } from "@/store/authStore";
 
 interface QuestionPaperProps {
   paper: QuestionPaperType;
 }
 
 export default function QuestionPaper({ paper }: QuestionPaperProps) {
+  const user = useAuthStore((s) => s.user);
+  const school = user?.school || "Delhi Public School, Sector-4, Bokaro";
+
   const sections = paper?.sections ?? [];
   const totalMarks = sections.reduce(
     (sum, s) => sum + (s.questions ?? []).reduce((sq, q) => sq + (q.marks ?? 0), 0),
@@ -18,7 +22,7 @@ export default function QuestionPaper({ paper }: QuestionPaperProps) {
   return (
     <article className="mx-auto max-w-3xl bg-white border border-slate-200 rounded-2xl p-6 sm:p-10 shadow-inner font-serif text-slate-900">
       <header className="text-center">
-        <h1 className="text-2xl font-bold">Delhi Public School, Sector-4, Bokaro</h1>
+        <h1 className="text-2xl font-bold">{school}</h1>
         <p className="mt-2 text-sm">First Terminal Examination, 2025-26</p>
       </header>
 

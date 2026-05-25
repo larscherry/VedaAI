@@ -28,7 +28,7 @@ const UserSchema = new Schema<IUser>(
     location: { type: String, default: "" },
     className: { type: String, default: "" },
     apiKey: { type: String, default: "" },
-    mockMode: { type: Boolean, default: true },
+    mockMode: { type: Boolean, default: false },
     llmBaseUrl: { type: String, default: "" },
     llmModel: { type: String, default: "" },
   },

@@ -72,11 +72,11 @@ export async function generateQuestionPaper(
     });
   }
 
-  const key = apiKey || env.OPENAI_API_KEY;
-  if (!key) throw new Error("No OpenAI API key available. Enable mock mode in Settings, or provide an API key.");
+  const key = apiKey || env.GROQ_API_KEY || env.OPENAI_API_KEY;
+  if (!key) throw new Error("No API key available. Enable mock mode in Settings, or provide an API key.");
 
   const baseURL = llmBaseUrl || env.LLM_BASE_URL || undefined;
-  const model = llmModel || env.LLM_MODEL || "gpt-4o-mini";
+  const model = llmModel || env.LLM_MODEL || "llama3-70b-8192";
   const openai = new OpenAI({ apiKey: key, baseURL });
 
   const response = await openai.chat.completions.create({

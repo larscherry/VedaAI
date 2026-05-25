@@ -10,6 +10,7 @@ export const env = {
   OPENAI_API_KEY: process.env.OPENAI_API_KEY || "",
   JWT_SECRET: process.env.JWT_SECRET || "vedaai-jwt-secret-dev-only",
   USE_MOCK_LLM: process.env.USE_MOCK_LLM === "true",
-  LLM_BASE_URL: process.env.LLM_BASE_URL || "",
-  LLM_MODEL: process.env.LLM_MODEL || "gpt-4o-mini",
+  LLM_BASE_URL: process.env.LLM_BASE_URL || "https://api.groq.com/openai/v1",
+  LLM_MODEL: process.env.LLM_MODEL || "llama3-70b-8192",
+  GROQ_API_KEY: process.env.GROQ_API_KEY || "",
 };

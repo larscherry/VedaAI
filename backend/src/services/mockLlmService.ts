@@ -45,30 +45,20 @@ function isStopword(word: string): boolean {
   return STOPWORDS.has(word.toLowerCase());
 }
 
-function extractTopics(fileContent?: string, subject?: string, instructions?: string): string[] {
+function extractTopics(fileContent?: string, subject?: string, _instructions?: string): string[] {
   const topics: string[] = [];
 
-  // Always use the subject if it's specific
+  // Use the subject as primary topic
   if (subject && subject.toLowerCase() !== "general" && subject !== "") {
     topics.push(subject);
   }
 
-  // Extract from instructions
-  if (instructions) {
-    const words = instructions
-      .replace(/[^a-zA-Z\s]/g, " ")
-      .split(/\s+/)
-      .filter((w) => w.length > 3 && looksLikeEnglishWord(w) && !isStopword(w))
-      .map((w) => w.toLowerCase());
-    topics.push(...words);
-  }
-
-  // Extract from file content
+  // Extract from file content — only high-frequency meaningful words
   if (fileContent) {
     const words = fileContent
       .replace(/[^a-zA-Z\s]/g, " ")
       .split(/\s+/)
-      .filter((w) => looksLikeEnglishWord(w) && !isStopword(w))
+      .filter((w) => w.length >= 5 && looksLikeEnglishWord(w) && !isStopword(w))
       .map((w) => w.toLowerCase());
 
     const freq: Record<string, number> = {};
@@ -77,59 +67,52 @@ function extractTopics(fileContent?: string, subject?: string, instructions?: st
     }
 
     const sorted = [...new Set(words)]
-      .filter((w) => freq[w] >= 2 || topics.some((t) => t.toLowerCase() === w))
+      .filter((w) => freq[w] >= 3)
       .sort((a, b) => (freq[b] || 0) - (freq[a] || 0));
     topics.push(...sorted);
   }
 
-  return [...new Set(topics)].slice(0, 12);
+  return [...new Set(topics)].slice(0, 8);
 }
 
 function generateQuestionText(
   number: number,
-  questionType: string,
+  _questionType: string,
   subject: string,
   difficulty: string,
   topics: string[]
 ): string {
-  const primaryTopic = topics.length > 0
-    ? topics[number % topics.length]
-    : (subject && subject.toLowerCase() !== "general" ? subject.toLowerCase() : "the given topic");
-
-  const subjectContext = subject && subject.toLowerCase() !== "general" ? subject.toLowerCase() : "this subject";
+  const topic = topics.length > 0 ? topics[number % topics.length] : "";
+  const subj = subject && subject.toLowerCase() !== "general" ? subject : "this subject";
 
   const easyQs = [
-    `What is ${primaryTopic}? Explain with an example.`,
-    `Define "${primaryTopic}" in your own words.`,
-    `List any four key characteristics of ${primaryTopic}.`,
-    `What is the main purpose of ${primaryTopic}?`,
-    `Explain the basic concept of ${primaryTopic}.`,
-    `Name the primary components of ${primaryTopic}.`,
-    `How is ${primaryTopic} useful in ${subjectContext}? Give two examples.`,
+    topic ? `What is ${topic} in ${subj}? Explain with an example.` : `Define an important concept in ${subj}.`,
+    topic ? `Describe the key features of ${topic} in ${subj}.` : `List the main components of ${subj}.`,
+    topic ? `How does ${topic} function in ${subj}? Give examples.` : `Explain the basic principles of ${subj} with examples.`,
+    topic ? `What is the importance of ${topic} in ${subj}?` : `Why is ${subj} important in daily life?`,
+    topic ? `Name the different types of ${topic} found in ${subj}.` : `Describe the fundamental concepts of ${subj}.`,
   ];
   const mediumQs = [
-    `Explain how ${primaryTopic} is applied in real-world scenarios with examples.`,
-    `Compare and contrast different aspects of ${primaryTopic}.`,
-    `Describe the process of ${primaryTopic} with suitable examples.`,
-    `Analyze the relationship between ${primaryTopic} and related concepts in ${subjectContext}.`,
-    `Discuss the advantages and limitations of ${primaryTopic}.`,
-    `Solve the following problem related to ${primaryTopic}: Provide a step-by-step solution.`,
+    topic ? `Explain how ${topic} is applied in real-world ${subj} scenarios.` : `Describe real-world applications of ${subj}.`,
+    topic ? `Compare and contrast different aspects of ${topic} in ${subj}.` : `Compare different concepts within ${subj}.`,
+    topic ? `Describe the process of ${topic} with suitable ${subj} examples.` : `Explain the key processes in ${subj} with examples.`,
+    topic ? `Analyze the relationship between ${topic} and related ${subj} concepts.` : `Analyze how different ${subj} concepts relate to each other.`,
+    topic ? `Discuss the advantages and limitations of ${topic} in ${subj}.` : `Evaluate the role of ${subj} in modern education.`,
   ];
   const hardQs = [
-    `Critically evaluate the role of ${primaryTopic} in ${subjectContext}.`,
-    `Design a comprehensive framework for understanding ${primaryTopic} in depth.`,
-    `Analyze the challenges related to ${primaryTopic} and propose practical solutions.`,
-    `Evaluate the impact of ${primaryTopic} on learning outcomes in ${subjectContext}.`,
-    `Synthesize a detailed explanation of ${primaryTopic} with multiple examples.`,
-    `Create a real-world problem involving ${primaryTopic} and solve it step by step.`,
+    topic ? `Critically evaluate the role of ${topic} in ${subj}.` : `Critically analyze the importance of ${subj} in science.`,
+    topic ? `Design an experiment to study ${topic} in ${subj}.` : `Design a framework for understanding ${subj} concepts.`,
+    topic ? `Analyze the challenges related to ${topic} in ${subj} and propose solutions.` : `Identify challenges in learning ${subj} and propose solutions.`,
+    topic ? `Evaluate the impact of ${topic} on learning outcomes in ${subj}.` : `Evaluate how ${subj} knowledge impacts other fields.`,
+    topic ? `Create a real-world problem involving ${topic} in ${subj} and solve it.` : `Create a real-world scenario applying ${subj} concepts.`,
   ];
 
   const pool = difficulty === "easy" ? easyQs : difficulty === "medium" ? mediumQs : hardQs;
   return pool[number % pool.length];
 }
 
-function generateAnswer(number: number, text: string): string {
-  return `Answer ${number}: ${text.replace("?", ".")} The complete explanation requires understanding of core concepts and their interrelationships. Students should provide relevant examples and demonstrate analytical thinking.`;
+function generateAnswer(number: number, text: string, subject: string): string {
+  return `Answer ${number}: ${text.replace("?", ".")} Students should explain using examples from ${subject} and demonstrate clear understanding of the core concepts.`;
 }
 
 export function generateMockPaper(params: {
@@ -190,7 +173,7 @@ export function generateMockPaper(params: {
   const answerKey = [];
   for (const section of sections) {
     for (const q of section.questions) {
-      answerKey.push(generateAnswer(q.number, q.text));
+      answerKey.push(generateAnswer(q.number, q.text, subject));
     }
   }
 
