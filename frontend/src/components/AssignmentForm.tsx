@@ -135,6 +135,10 @@ export default function AssignmentForm() {
 
     try {
       const result = await api.createAssignment(formData);
+      if (result.status === "completed") {
+        router.push(`/output/${result.assignmentId}`);
+        return;
+      }
       setAssignmentId(result.assignmentId);
       connect(result.assignmentId);
     } catch (err: any) {

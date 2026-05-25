@@ -11,7 +11,7 @@ import { createNotification } from "../services/notificationService";
 import path from "path";
 import fs from "fs";
 
-async function runGeneration(assignmentId: string) {
+export async function startGeneration(assignmentId: string) {
   try {
     const assignment = await Assignment.findById(assignmentId);
     if (!assignment) throw new Error("Assignment not found");
@@ -157,6 +157,9 @@ export async function createAssignment(req: AuthRequest, res: Response): Promise
       return;
     }
 
+    const user = await User.findById(req.userId);
+    const isMockMode = user?.mockMode ?? true;
+
     const parsedTypes = typeof questionTypes === "string" ? JSON.parse(questionTypes) : questionTypes;
 
     if (!Array.isArray(parsedTypes) || parsedTypes.length === 0) {
@@ -193,13 +196,21 @@ export async function createAssignment(req: AuthRequest, res: Response): Promise
       status: "processing",
     });
 
-    res.status(201).json({
-      assignmentId: assignment._id.toString(),
-      status: "processing",
-    });
-
-    // Small delay so the WebSocket client has time to connect
-    setTimeout(() => runGeneration(assignment._id.toString()), 1000);
+    if (isMockMode) {
+      // Mock LLM is instant — generate inline
+      await startGeneration(assignment._id.toString());
+      res.status(201).json({
+        assignmentId: assignment._id.toString(),
+        status: "completed",
+      });
+    } else {
+      // Real LLM — background generation
+      res.status(201).json({
+        assignmentId: assignment._id.toString(),
+        status: "processing",
+      });
+      startGeneration(assignment._id.toString()).catch((e) => console.error("Background gen failed:", e));
+    }
   } catch (error: any) {
     console.error("Create assignment error:", error);
     res.status(500).json({ error: error.message || "Failed to create assignment" });
@@ -255,7 +266,7 @@ export async function regeneratePaper(req: AuthRequest, res: Response): Promise<
 
     res.json({ message: "Regeneration started", assignmentId: req.params.id });
 
-    setTimeout(() => runGeneration(req.params.id), 1000);
+    startGeneration(req.params.id).catch((e) => console.error("Regeneration failed:", e));
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
