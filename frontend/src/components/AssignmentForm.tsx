@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useMemo, useCallback } from "react";
+import { useState, useRef, useMemo, useCallback, useEffect } from "react";
 import {
   Plus,
   X,
@@ -9,6 +9,9 @@ import {
   Mic,
   ChevronDown,
   ArrowLeft,
+  WifiOff,
+  CheckCircle,
+  Loader2,
 } from "lucide-react";
 import Stepper from "./Stepper";
 import { useAssignmentStore } from "@/store/assignmentStore";
@@ -99,6 +102,9 @@ export default function AssignmentForm() {
   };
 
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [wsOffline, setWsOffline] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const validate = () => {
     const errs: Record<string, string> = {};
@@ -137,6 +143,39 @@ export default function AssignmentForm() {
     }
   }, [title, dueDate, rows, totalQ, totalM, info, subject, className, files, setSubmitting, setAssignmentId, connect]);
 
+  // Polling fallback when assignmentId is set
+  useEffect(() => {
+    if (!assignmentId) return;
+
+    setLocalError(null);
+    setWsOffline(false);
+
+    const poll = async () => {
+      try {
+        const a = await api.getAssignment(assignmentId);
+        if (a.status === "completed") {
+          useWebSocketStore.setState({ isComplete: true });
+          clearInterval(pollRef.current!);
+          pollRef.current = null;
+        } else if (a.status === "failed") {
+          setLocalError(a.error || "Generation failed");
+          clearInterval(pollRef.current!);
+          pollRef.current = null;
+        }
+      } catch {}
+    };
+
+    pollRef.current = setInterval(poll, 2000);
+    return () => {
+      if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+    };
+  }, [assignmentId]);
+
+  // Track WebSocket offline
+  useEffect(() => {
+    if (wsError) setWsOffline(true);
+  }, [wsError]);
+
   if (assignmentId) {
     if (isComplete) {
       setTimeout(() => {
@@ -147,8 +186,14 @@ export default function AssignmentForm() {
     }
 
     return (
-      <div className="max-w-lg mx-auto w-full py-8">
-        <StatusTracker progress={progress} error={wsError} isComplete={isComplete} />
+      <div className="max-w-lg mx-auto w-full py-8 space-y-3">
+        <StatusTracker progress={progress} error={localError || wsError} isComplete={isComplete} />
+        {wsOffline && !isComplete && !localError && !wsError && (
+          <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-2">
+            <WifiOff className="h-3.5 w-3.5 shrink-0" />
+            Live updates unavailable — checking every 2 seconds
+          </div>
+        )}
       </div>
     );
   }
