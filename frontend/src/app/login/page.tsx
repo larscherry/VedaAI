@@ -83,7 +83,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-11 rounded-full bg-[#1a1a1a] text-white text-sm font-semibold flex items-center justify-center gap-2 hover:bg-black transition cursor-pointer disabled:opacity-50"
+              className="w-full h-11 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition cursor-pointer disabled:opacity-50"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               Sign In

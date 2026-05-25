@@ -123,7 +123,7 @@ export default function SettingsPage() {
                   onClick={() => setTab(t.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition cursor-pointer ${
                     active
-                      ? "bg-[var(--foreground)] text-white"
+                      ? "bg-[var(--foreground)] text-[var(--background)]"
                       : "bg-[var(--card)] border border-[var(--border)] text-[var(--muted-foreground)] hover:bg-[var(--hover)]"
                   }`}
                 >
@@ -160,7 +160,7 @@ export default function SettingsPage() {
                 <label className="text-sm font-medium text-[var(--foreground)]">Class</label>
                 <input value={className} onChange={(e) => setClassName(e.target.value)} className="mt-1 w-full h-11 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] px-4 text-sm outline-none focus:ring-2 focus:ring-[#E94E1B]/30" />
               </div>
-              <button onClick={handleSaveProfile} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-white text-sm font-semibold px-6 py-2.5 hover:bg-black transition cursor-pointer disabled:opacity-50">
+              <button onClick={handleSaveProfile} disabled={saving} className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold px-6 py-2.5 hover:opacity-90 transition cursor-pointer disabled:opacity-50">
                 {saving && <Loader2 className="h-4 w-4 animate-spin" />}
                 {saved ? "Saved!" : "Save Changes"}
                 {saved && <CheckCircle className="h-4 w-4 text-emerald-400" />}
@@ -186,7 +186,7 @@ export default function SettingsPage() {
                   </button>
                 </div>
               </div>
-              <button onClick={handleSaveApiKey} disabled={apiSaving} className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-white text-sm font-semibold px-6 py-2.5 hover:bg-black transition cursor-pointer disabled:opacity-50">
+              <button onClick={handleSaveApiKey} disabled={apiSaving} className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold px-6 py-2.5 hover:opacity-90 transition cursor-pointer disabled:opacity-50">
                 {apiSaving && <Loader2 className="h-4 w-4 animate-spin" />}
                 {apiSaved ? "Saved!" : "Save API Key"}
                 {apiSaved && <CheckCircle className="h-4 w-4 text-emerald-400" />}
@@ -205,7 +205,7 @@ export default function SettingsPage() {
                 <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} className="mt-1 w-full h-11 rounded-xl bg-[var(--input-bg)] border border-[var(--border)] px-4 text-sm outline-none focus:ring-2 focus:ring-[#E94E1B]/30" />
               </div>
               {pwError && <p className="text-sm text-red-500">{pwError}</p>}
-              <button onClick={handleChangePassword} disabled={pwSaving} className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-white text-sm font-semibold px-6 py-2.5 hover:bg-black transition cursor-pointer disabled:opacity-50">
+              <button onClick={handleChangePassword} disabled={pwSaving} className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold px-6 py-2.5 hover:opacity-90 transition cursor-pointer disabled:opacity-50">
                 {pwSaving && <Loader2 className="h-4 w-4 animate-spin" />}
                 {pwSaved ? "Changed!" : "Change Password"}
                 {pwSaved && <CheckCircle className="h-4 w-4 text-emerald-400" />}

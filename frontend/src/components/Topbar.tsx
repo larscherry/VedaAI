@@ -140,8 +140,8 @@ export default function Topbar() {
             onClick={() => { setShowProfile(!showProfile); setShowNotif(false); }}
             className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-[var(--hover)] transition-colors"
           >
-            <div className="h-8 w-8 rounded-full bg-[var(--brand)] flex items-center justify-center text-white text-sm font-bold">
-              {initials}
+            <div className="h-8 w-8 rounded-full overflow-hidden">
+              <img src="/profile.png" alt="Profile" className="h-full w-full object-cover" />
             </div>
             <span className="text-sm font-medium text-[var(--foreground)] hidden sm:block max-w-[120px] truncate">
               {user?.name || "User"}

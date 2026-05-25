@@ -110,11 +110,8 @@ export default function Sidebar() {
           </Link>
 
           <div className="flex items-center gap-3 rounded-2xl bg-[var(--muted)] p-2.5">
-            <div className="h-11 w-11 rounded-full bg-gradient-to-br from-amber-300 to-orange-500 flex items-center justify-center text-xl shrink-0 overflow-hidden">
-              <svg viewBox="0 0 40 40" className="h-7 w-7">
-                <circle cx="20" cy="14" r="6" fill="white" opacity="0.9" />
-                <ellipse cx="20" cy="30" rx="10" ry="8" fill="white" opacity="0.9" />
-              </svg>
+            <div className="h-11 w-11 rounded-full overflow-hidden shrink-0">
+              <img src="/profile.png" alt="Profile" className="h-full w-full object-cover" />
             </div>
             <div className="flex flex-col min-w-0 flex-1">
               <span className="text-sm font-bold text-[var(--foreground)] leading-tight truncate">
@@ -128,7 +125,7 @@ export default function Sidebar() {
 
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-3 py-2 text-[15px] text-[var(--muted-foreground)] cursor-pointer hover:text-red-500 hover:bg-red-50/50 rounded-lg transition"
+            className="flex items-center gap-3 px-3 py-2 text-[15px] text-[var(--muted-foreground)] cursor-pointer hover:text-red-400 rounded-lg transition"
           >
             <LogOut className="h-[18px] w-[18px]" />
             <span>Logout</span>

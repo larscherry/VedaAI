@@ -53,40 +53,40 @@ export default function GroupDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#e8e8ea] p-3 flex gap-3">
+    <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
       <Sidebar />
-      <main className="flex-1 bg-white rounded-2xl flex flex-col overflow-hidden relative">
+      <main className="flex-1 bg-[var(--card)] rounded-2xl flex flex-col overflow-hidden relative">
         <Topbar />
 
-        <div className="flex-1 overflow-y-auto px-7 pt-6 pb-32 bg-gradient-to-b from-[#f5f5f7] to-white">
+        <div className="flex-1 overflow-y-auto px-7 pt-6 pb-32" style={{ background: "linear-gradient(to bottom, var(--muted), var(--card))" }}>
           {loading ? (
             <div className="mt-20 flex justify-center">
-              <Loader2 className="h-6 w-6 animate-spin text-[#E94E1B]" />
+              <Loader2 className="h-6 w-6 animate-spin text-[var(--brand)]" />
             </div>
           ) : !group ? (
-            <div className="mt-20 text-center text-sm text-gray-500">Group not found</div>
+            <div className="mt-20 text-center text-sm text-[var(--muted-foreground)]">Group not found</div>
           ) : (
             <>
               <div className="flex items-center gap-3">
                 <button onClick={() => router.push("/groups")} className="p-1 cursor-pointer">
-                  <ArrowLeft className="h-5 w-5 text-[#6b6b70]" />
+                  <ArrowLeft className="h-5 w-5 text-[var(--muted-foreground)]" />
                 </button>
                 <div>
-                  <h1 className="text-2xl font-bold text-[#1a1a1a]">{group.name}</h1>
+                  <h1 className="text-2xl font-bold text-[var(--foreground)]">{group.name}</h1>
                   {group.description && (
-                    <p className="text-sm text-[#8a8a90]">{group.description}</p>
+                    <p className="text-sm text-[var(--muted-foreground)]">{group.description}</p>
                   )}
                 </div>
               </div>
 
               <div className="mt-6 flex items-center justify-between">
-                <p className="text-sm text-[#6b6b70]">
+                <p className="text-sm text-[var(--muted-foreground)]">
                   <Users className="h-4 w-4 inline mr-1" />
                   {group.students.length} student{group.students.length !== 1 ? "s" : ""}
                 </p>
                 <button
                   onClick={() => setShowAdd(true)}
-                  className="inline-flex items-center gap-2 rounded-full bg-[#1a1a1a] text-white text-sm font-semibold px-4 py-2 hover:bg-black transition cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold px-4 py-2 hover:opacity-90 transition cursor-pointer"
                 >
                   <Plus className="h-4 w-4" />
                   Add Student
@@ -94,15 +94,15 @@ export default function GroupDetailPage() {
               </div>
 
               {group.students.length === 0 ? (
-                <div className="mt-8 text-center py-12 border border-dashed border-[#e5e5e7] rounded-2xl">
-                  <Users className="h-8 w-8 text-[#8a8a90] mx-auto" />
-                  <p className="mt-2 text-sm text-[#8a8a90]">No students yet</p>
+                <div className="mt-8 text-center py-12 border border-dashed border-[var(--border)] rounded-2xl">
+                  <Users className="h-8 w-8 text-[var(--muted-foreground)] mx-auto" />
+                  <p className="mt-2 text-sm text-[var(--muted-foreground)]">No students yet</p>
                 </div>
               ) : (
-                <div className="mt-4 overflow-hidden rounded-xl border border-[#ececf0]">
+                <div className="mt-4 overflow-hidden rounded-xl border border-[var(--border)]">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-[#f7f7f8] text-left text-[#6b6b70]">
+                      <tr className="bg-[var(--hover)] text-left text-[var(--muted-foreground)]">
                         <th className="px-4 py-3 font-medium">Name</th>
                         <th className="px-4 py-3 font-medium">Roll Number</th>
                         <th className="px-4 py-3 font-medium">Email</th>
@@ -111,14 +111,14 @@ export default function GroupDetailPage() {
                     </thead>
                     <tbody>
                       {group.students.map((s) => (
-                        <tr key={s.rollNumber} className="border-t border-[#ececf0]">
-                          <td className="px-4 py-3 text-[#1a1a1a] font-medium">{s.name}</td>
-                          <td className="px-4 py-3 text-[#6b6b70]">{s.rollNumber}</td>
-                          <td className="px-4 py-3 text-[#6b6b70]">{s.email || "—"}</td>
+                        <tr key={s.rollNumber} className="border-t border-[var(--border)]">
+                          <td className="px-4 py-3 text-[var(--foreground)] font-medium">{s.name}</td>
+                          <td className="px-4 py-3 text-[var(--muted-foreground)]">{s.rollNumber}</td>
+                          <td className="px-4 py-3 text-[var(--muted-foreground)]">{s.email || "—"}</td>
                           <td className="px-4 py-3">
                             <button
                               onClick={() => handleRemove(s.rollNumber)}
-                              className="p-1 text-[#8a8a90] hover:text-red-500 cursor-pointer"
+                              className="p-1 text-[var(--muted-foreground)] hover:text-red-500 cursor-pointer"
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -136,14 +136,14 @@ export default function GroupDetailPage() {
         {/* Add Student Modal */}
         {showAdd && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-            <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4">
+            <div className="bg-[var(--card)] rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4">
               <h2 className="text-lg font-bold mb-4">Add Student</h2>
-              <input value={sName} onChange={(e) => setSName(e.target.value)} placeholder="Student name" className="w-full h-11 rounded-xl bg-[#f7f7f8] border border-[#e5e5e7] px-4 text-sm outline-none focus:ring-2 focus:ring-[#E94E1B]/30 mb-3" />
-              <input value={sRoll} onChange={(e) => setSRoll(e.target.value)} placeholder="Roll number" className="w-full h-11 rounded-xl bg-[#f7f7f8] border border-[#e5e5e7] px-4 text-sm outline-none focus:ring-2 focus:ring-[#E94E1B]/30 mb-3" />
-              <input value={sEmail} onChange={(e) => setSEmail(e.target.value)} placeholder="Email (optional)" className="w-full h-11 rounded-xl bg-[#f7f7f8] border border-[#e5e5e7] px-4 text-sm outline-none focus:ring-2 focus:ring-[#E94E1B]/30 mb-4" />
+              <input value={sName} onChange={(e) => setSName(e.target.value)} placeholder="Student name" className="w-full h-11 rounded-xl bg-[var(--hover)] border border-[var(--border)] px-4 text-sm outline-none focus:ring-2 focus:ring-[var(--brand)]/30 mb-3" />
+              <input value={sRoll} onChange={(e) => setSRoll(e.target.value)} placeholder="Roll number" className="w-full h-11 rounded-xl bg-[var(--hover)] border border-[var(--border)] px-4 text-sm outline-none focus:ring-2 focus:ring-[var(--brand)]/30 mb-3" />
+              <input value={sEmail} onChange={(e) => setSEmail(e.target.value)} placeholder="Email (optional)" className="w-full h-11 rounded-xl bg-[var(--hover)] border border-[var(--border)] px-4 text-sm outline-none focus:ring-2 focus:ring-[var(--brand)]/30 mb-4" />
               <div className="flex gap-3">
-                <button onClick={() => setShowAdd(false)} className="flex-1 h-11 rounded-full border border-[#e5e5e7] text-sm font-medium hover:bg-[#f7f7f8] transition cursor-pointer">Cancel</button>
-                <button onClick={handleAdd} className="flex-1 h-11 rounded-full bg-[#1a1a1a] text-white text-sm font-semibold hover:bg-black transition cursor-pointer">Add</button>
+                <button onClick={() => setShowAdd(false)} className="flex-1 h-11 rounded-full border border-[var(--border)] text-sm font-medium hover:bg-[var(--hover)] transition cursor-pointer">Cancel</button>
+                <button onClick={handleAdd} className="flex-1 h-11 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-semibold hover:opacity-90 transition cursor-pointer">Add</button>
               </div>
             </div>
           </div>

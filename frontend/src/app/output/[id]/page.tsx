@@ -123,12 +123,12 @@ export default function OutputPage({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 p-3 flex gap-3">
+      <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
         <Sidebar />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin text-orange-500 mx-auto" />
-            <p className="mt-3 text-sm text-gray-500">Loading question paper...</p>
+            <p className="mt-3 text-sm text-[var(--muted-foreground)]">Loading question paper...</p>
           </div>
         </main>
       </div>
@@ -137,9 +137,9 @@ export default function OutputPage({
 
   if (processing || (progress && !isComplete)) {
     return (
-      <div className="min-h-screen bg-gray-100 p-3 flex gap-3">
+      <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
         <Sidebar />
-        <main className="flex-1 flex flex-col items-center justify-center bg-white rounded-2xl">
+        <main className="flex-1 flex flex-col items-center justify-center bg-[var(--card)] rounded-2xl">
           <div className="max-w-md w-full px-6">
             <StatusTracker progress={progress} error={null} isComplete={isComplete} />
             {wsOffline && (
@@ -156,9 +156,9 @@ export default function OutputPage({
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-100 p-3 flex gap-3">
+      <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
         <Sidebar />
-        <main className="flex-1 bg-white rounded-2xl flex flex-col overflow-hidden">
+        <main className="flex-1 bg-[var(--card)] rounded-2xl flex flex-col overflow-hidden">
           <Topbar />
           <section className="flex-1 flex items-center justify-center">
             <div className="text-center max-w-md">
@@ -168,7 +168,7 @@ export default function OutputPage({
               <p className="mt-4 text-sm text-red-600">{error}</p>
               <button
                 onClick={handleRegenerate}
-                className="mt-4 inline-flex items-center gap-2 rounded-full bg-black text-white text-sm font-medium px-5 py-2.5 hover:bg-gray-800 transition-colors cursor-pointer"
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-medium px-5 py-2.5 hover:opacity-90 transition-colors cursor-pointer"
               >
                 Try Again
               </button>
@@ -181,19 +181,19 @@ export default function OutputPage({
 
   if (!paper) {
     return (
-      <div className="min-h-screen bg-gray-100 p-3 flex gap-3">
+      <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
         <Sidebar />
-        <main className="flex-1 bg-white rounded-2xl flex flex-col overflow-hidden">
+        <main className="flex-1 bg-[var(--card)] rounded-2xl flex flex-col overflow-hidden">
           <Topbar />
           <section className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <div className="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto">
-                <FileText className="h-7 w-7 text-gray-400" />
+              <div className="h-16 w-16 rounded-full bg-[var(--muted)] flex items-center justify-center mx-auto">
+                <FileText className="h-7 w-7 text-[var(--muted-foreground)]" />
               </div>
-              <p className="mt-4 text-sm text-gray-500">Question paper not available</p>
+              <p className="mt-4 text-sm text-[var(--muted-foreground)]">Question paper not available</p>
               <button
                 onClick={handleRegenerate}
-                className="mt-4 inline-flex items-center gap-2 rounded-full bg-black text-white text-sm font-medium px-5 py-2.5 hover:bg-gray-800 transition-colors cursor-pointer"
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-medium px-5 py-2.5 hover:opacity-90 transition-colors cursor-pointer"
               >
                 Generate Now
               </button>
@@ -205,7 +205,7 @@ export default function OutputPage({
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f3ef] p-3 flex gap-3">
+    <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
       <Sidebar />
       <main className="flex-1 min-w-0">
         <Topbar />
@@ -214,7 +214,7 @@ export default function OutputPage({
           <ActionBar assignmentId={id} />
         </div>
 
-        <section className="mt-4 rounded-2xl bg-white p-5 sm:p-8 shadow-sm">
+        <section className="mt-4 rounded-2xl bg-[var(--card)] p-5 sm:p-8 shadow-sm">
           {paper && <QuestionPaper paper={paper} />}
 
           {paper && paper.answerKey && paper.answerKey.length > 0 && <AnswerKey answers={paper.answerKey} />}
@@ -223,7 +223,7 @@ export default function OutputPage({
             <button
               onClick={handleRegenerate}
               disabled={isRegenerating}
-              className="px-6 py-2.5 rounded-full bg-black text-white text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="px-6 py-2.5 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-medium hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isRegenerating ? "Regenerating..." : "Regenerate Questions"}
             </button>

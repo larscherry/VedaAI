@@ -33,16 +33,16 @@ const tools = [
 
 export default function ToolkitPage() {
   return (
-    <div className="min-h-screen bg-[#e8e8ea] p-3 flex gap-3">
+    <div className="min-h-screen bg-[var(--background)] p-3 flex gap-3">
       <Sidebar />
-      <main className="flex-1 bg-white rounded-2xl flex flex-col overflow-hidden">
+      <main className="flex-1 bg-[var(--card)] rounded-2xl flex flex-col overflow-hidden">
         <Topbar />
-        <div className="flex-1 overflow-y-auto px-7 pt-6 pb-16 bg-gradient-to-b from-[#f5f5f7] to-white">
+        <div className="flex-1 overflow-y-auto px-7 pt-6 pb-16" style={{ background: "linear-gradient(to bottom, var(--muted), var(--card))" }}>
           <div className="flex items-start gap-3 mb-8">
-            <span className="mt-2 h-3 w-3 rounded-full bg-[#22c55e]" />
+            <span className="mt-2 h-3 w-3 rounded-full bg-emerald-500" />
             <div>
-              <h1 className="text-2xl font-bold text-[#1a1a1a]">AI Teacher&apos;s Toolkit</h1>
-              <p className="text-sm text-[#8a8a90] mt-1">Access AI-powered tools for teaching and assessment.</p>
+              <h1 className="text-2xl font-bold text-[var(--foreground)]">AI Teacher&apos;s Toolkit</h1>
+              <p className="text-sm text-[var(--muted-foreground)] mt-1">Access AI-powered tools for teaching and assessment.</p>
             </div>
           </div>
 
@@ -51,13 +51,13 @@ export default function ToolkitPage() {
               const Icon = t.icon;
               return (
                 <Link key={t.title} href={t.link}>
-                  <div className="bg-white rounded-2xl border border-[#ececf0] shadow-[0_1px_2px_rgba(0,0,0,0.04)] p-6 hover:shadow-md transition cursor-pointer">
+                  <div className="bg-[var(--card)] rounded-2xl border border-[var(--border)] shadow-[0_1px_2px_rgba(0,0,0,0.04)] p-6 hover:shadow-md transition cursor-pointer">
                     <div className={`h-12 w-12 rounded-xl ${t.color} flex items-center justify-center`}>
                       <Icon className="h-6 w-6 text-white" />
                     </div>
-                    <h3 className="mt-4 text-lg font-bold text-[#1a1a1a]">{t.title}</h3>
-                    <p className="mt-1 text-sm text-[#8a8a90]">{t.desc}</p>
-                    <div className="mt-4 flex items-center gap-1 text-sm font-semibold text-[#E94E1B]">
+                    <h3 className="mt-4 text-lg font-bold text-[var(--foreground)]">{t.title}</h3>
+                    <p className="mt-1 text-sm text-[var(--muted-foreground)]">{t.desc}</p>
+                    <div className="mt-4 flex items-center gap-1 text-sm font-semibold text-[var(--brand)]">
                       {t.coming ? "Coming Soon" : "Open Tool"}
                       {!t.coming && <ArrowRight className="h-3.5 w-3.5" />}
                     </div>

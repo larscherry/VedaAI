@@ -160,7 +160,7 @@ export default function AssignmentForm() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Assignment title"
-          className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
+          className="w-full rounded-xl border border-gray-200 bg-[var(--card)] px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
         />
       </div>
 
@@ -172,7 +172,7 @@ export default function AssignmentForm() {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             placeholder="e.g. Mathematics"
-            className="mt-1 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
+            className="mt-1 w-full rounded-xl border border-gray-200 bg-[var(--card)] px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
           />
         </div>
         <div>
@@ -181,7 +181,7 @@ export default function AssignmentForm() {
             value={className}
             onChange={(e) => setClassName(e.target.value)}
             placeholder="e.g. XII"
-            className="mt-1 w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
+            className="mt-1 w-full rounded-xl border border-gray-200 bg-[var(--card)] px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
           />
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function AssignmentForm() {
             setFiles((f) => [...f, ...Array.from(e.target.files ?? [])])
           }
         />
-        <div className="mx-auto h-10 w-10 rounded-full bg-white shadow-sm grid place-items-center mb-3">
+        <div className="mx-auto h-10 w-10 rounded-full bg-[var(--card)] shadow-sm grid place-items-center mb-3">
           <UploadCloud size={20} className="text-gray-500" />
         </div>
         <p className="text-sm font-medium">
@@ -217,7 +217,7 @@ export default function AssignmentForm() {
         <p className="text-xs text-gray-400 mt-0.5">PDF, TXT, MD, DOC, DOCX, JPG, PNG &middot; upto 10 MB</p>
         <button
           type="button"
-          className="mt-4 px-4 py-1.5 rounded-lg bg-white border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
+          className="mt-4 px-4 py-1.5 rounded-lg bg-[var(--card)] border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors cursor-pointer"
         >
           Browse Files
         </button>
@@ -239,7 +239,7 @@ export default function AssignmentForm() {
             type="date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
+            className="w-full rounded-xl border border-gray-200 bg-[var(--card)] px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
           />
           <Calendar
             size={16}
@@ -264,7 +264,7 @@ export default function AssignmentForm() {
                   <select
                     value={row.type}
                     onChange={(e) => updateRow(row.id, { type: e.target.value })}
-                    className="w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 py-2.5 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors cursor-pointer"
+                    className="w-full appearance-none rounded-xl border border-gray-200 bg-[var(--card)] px-4 py-2.5 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors cursor-pointer"
                   >
                     {QUESTION_TYPES.map((t) => (
                       <option key={t}>{t}</option>
@@ -304,7 +304,7 @@ export default function AssignmentForm() {
           onClick={addRow}
           className="mt-4 flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-orange-600 transition-colors cursor-pointer"
         >
-          <span className="h-6 w-6 grid place-items-center rounded-full bg-black text-white">
+          <span className="h-6 w-6 grid place-items-center rounded-full bg-[var(--foreground)] text-[var(--background)]">
             <Plus size={14} />
           </span>
           Add Question Type
@@ -333,11 +333,11 @@ export default function AssignmentForm() {
             onChange={(e) => setInfo(e.target.value)}
             rows={3}
             placeholder="e.g Generate a question paper for 3 hour exam duration..."
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 resize-none transition-colors"
+            className="w-full rounded-xl border border-gray-200 bg-[var(--card)] px-4 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 resize-none transition-colors"
           />
           <button
             type="button"
-            className="absolute right-3 bottom-3 h-7 w-7 grid place-items-center rounded-full bg-black text-white hover:bg-gray-800 transition-colors cursor-pointer"
+            className="absolute right-3 bottom-3 h-7 w-7 grid place-items-center rounded-full bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-colors cursor-pointer"
           >
             <Mic size={14} />
           </button>
@@ -354,7 +354,7 @@ export default function AssignmentForm() {
         <button
           type="button"
           onClick={() => router.push("/assignments")}
-          className="px-6 py-2.5 rounded-full bg-white shadow-sm text-sm font-medium flex items-center gap-2 hover:shadow-md transition-shadow cursor-pointer"
+          className="px-6 py-2.5 rounded-full bg-[var(--card)] shadow-sm text-sm font-medium flex items-center gap-2 hover:shadow-md transition-shadow cursor-pointer"
         >
           <ArrowLeft size={14} /> Previous
         </button>
@@ -362,7 +362,7 @@ export default function AssignmentForm() {
           type="button"
           onClick={handleSubmit}
           disabled={isSubmitting}
-          className="px-6 py-2.5 rounded-full bg-black text-white text-sm font-medium flex items-center gap-2 hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="px-6 py-2.5 rounded-full bg-[var(--foreground)] text-[var(--background)] text-sm font-medium flex items-center gap-2 hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           {isSubmitting ? "Generating..." : "Generate"} <span className="text-base leading-none">→</span>
         </button>
