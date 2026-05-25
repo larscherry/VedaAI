@@ -193,13 +193,13 @@ export async function createAssignment(req: AuthRequest, res: Response): Promise
       status: "processing",
     });
 
-    // Run generation in background (no BullMQ dependency)
-    runGeneration(assignment._id.toString());
-
     res.status(201).json({
       assignmentId: assignment._id.toString(),
       status: "processing",
     });
+
+    // Small delay so the WebSocket client has time to connect
+    setTimeout(() => runGeneration(assignment._id.toString()), 1000);
   } catch (error: any) {
     console.error("Create assignment error:", error);
     res.status(500).json({ error: error.message || "Failed to create assignment" });
@@ -253,9 +253,9 @@ export async function regeneratePaper(req: AuthRequest, res: Response): Promise<
     await Assignment.findByIdAndUpdate(req.params.id, { status: "processing" });
     await QuestionPaper.deleteOne({ assignmentId: req.params.id });
 
-    runGeneration(req.params.id);
-
     res.json({ message: "Regeneration started", assignmentId: req.params.id });
+
+    setTimeout(() => runGeneration(req.params.id), 1000);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
